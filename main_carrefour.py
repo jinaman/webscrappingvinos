@@ -1,4 +1,3 @@
-import pytest_ordering
 from selenium import webdriver
 import unittest
 from selenium.webdriver.chrome.options import Options
@@ -6,14 +5,20 @@ from mainPage_carrefour import MainPage
 import time
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from datetime import datetime
+
 
 
 class Vinos(unittest.TestCase):
     def setUp(self):
         chrome_options = Options()
         self.driver = webdriver.Chrome(options=chrome_options)
+        self.now = datetime.now()
+        current_date = self.now.strftime("%d_%m_%Y-%H")#_%M_%S")
+        self.filename = f'{current_date}.csv'
 
-    def test_vinostintos_carrefour(self):
+
+    def test_a_vinostintos_carrefour(self):
         self.driver.get('https://www.carrefour.com.ar/Bebidas/Vinos/Vinos-tintos')
         self.driver.maximize_window()
         self.driver.implicitly_wait(5)
@@ -21,22 +26,8 @@ class Vinos(unittest.TestCase):
         time.sleep(10)
         self.pagina_principal.cerrar_alerta_cookies()
         time.sleep(10)
-        try:
-            self.pagina_principal.click_mostrar_mas()
-        except:
-            print("No se clickeó el primer mostrar más")
+        self.pagina_principal.mostrar_todas_las_paginas()
         time.sleep(5)
-
-        while True:
-            try:
-                WebDriverWait(self.driver, 5).until(
-                    EC.visibility_of_element_located(self.pagina_principal.mostrar_mas_boton))
-                self.pagina_principal.click_mostrar_mas()
-                time.sleep(5)
-            except:
-                time.sleep(5)
-                break
-        time.sleep(8)
 
         """LOCATORS VINOS TINTOS CARREFOUR"""
         listadeprecios = self.pagina_principal.lista_de_precios()
@@ -45,35 +36,35 @@ class Vinos(unittest.TestCase):
         listadenombres2 = []
         for i in listadenombres:
             listadenombres2.append(i.text)  # Con esto lleno la lista de nombres 2
-        print(listadenombres2)  # LISTA DE NOMBRES LLENA
+        # print(listadenombres2)  # LISTA DE NOMBRES LLENA
 
         precios2 = []
         for i in listadeprecios:
             precios2.append(i.text)  # LISTA DE PRECIO LLENA
-        print(precios2)
+        # print(precios2)
 
         largo_nombres = len(listadenombres2)
         largo_precios = len(precios2)
-        print(f'los nombres de los vinos tintos totales son {largo_nombres}')
+        print('\n' + f'los nombres de los vinos tintos totales son {largo_nombres}')
         print(f'los precios de los vinos tintos totales son {largo_precios}')
 
         """MANEJO DE EXCEL"""
-        filename = 'preciosdevinos.csv'
-        f = open(filename, 'a', encoding='utf-8')
-        f.write('Vinos tintos - Carefour,Precio')  # Los headees del excel
+        # filename = 'preciosdevinos.csv'
+        f = open(self.filename, 'a', encoding='utf-8')
+        f.write('Supermercado,Vinos tintos - Carefour,Precio')  # Los headees del excel
 
         contador = 0
         for i in range(len(listadenombres2)):
             try:
                 WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located(self.pagina_principal.precios))
-                f.write('\n' + listadenombres2[contador] + ',' + precios2[contador])
+                f.write('\n' + 'Carrefour' + ',' +listadenombres2[contador] + ',' + precios2[contador])
                 contador = contador + 1
             except:
                 WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located(self.pagina_principal.precios))
-                f.write('\n' + listadenombres2[contador])
+                f.write('\n' + 'Carrefour' + ',' +listadenombres2[contador])
                 contador = contador + 1
 
-    def test_vinos_blancos_carrefour(self):
+    def test_b_vinos_blancos_carrefour(self):
         self.driver.get('https://www.carrefour.com.ar/Bebidas/Vinos/Vinos-blancos')
         self.driver.maximize_window()
         self.driver.implicitly_wait(5)
@@ -81,21 +72,8 @@ class Vinos(unittest.TestCase):
         time.sleep(10)
         self.pagina_principal.cerrar_alerta_cookies()
         time.sleep(10)
-        try:
-            self.pagina_principal.click_mostrar_mas()
-        except:
-            print("No se clickeó el primer mostrar más")
-        time.sleep(8)
-
-        while True:
-            try:
-                WebDriverWait(self.driver, 5).until(
-                    EC.visibility_of_element_located(self.pagina_principal.mostrar_mas_boton))
-                self.pagina_principal.click_mostrar_mas()
-                time.sleep(5)
-            except:
-                time.sleep(5)
-                break
+        time.sleep(5)
+        self.pagina_principal.mostrar_todas_las_paginas()
 
         """LOCATORS VINOS BLANCOS CARREFOUR"""
         listadeprecios = self.pagina_principal.lista_de_precios()
@@ -104,35 +82,35 @@ class Vinos(unittest.TestCase):
         listadenombres3 = []
         for i in listadenombres:
             listadenombres3.append(i.text)
-        print(listadenombres3)
+        # print(listadenombres3)
 
         precios3 = []
         for i in listadeprecios:
             precios3.append(i.text)
-        print(precios3)
+        # print(precios3)
 
         largo_nombres = len(listadenombres3)
         largo_precios = len(precios3)
-        print(f'los nombres de los vinos blancos totales son {largo_nombres}')
+        print('\n' + f'los nombres de los vinos blancos totales son {largo_nombres}')
         print(f'los precios de los vinos blancos totales son {largo_precios}')
 
         """MANEJO DE EXCEL"""
-        filename = 'preciosdevinos.csv'
-        f = open(filename, 'a', encoding='utf-8')
-        f.write('\n' + 'Vinos blancos - Carefour,Precio')
+        #filename = 'preciosdevinos.csv'
+        f = open(self.filename, 'a', encoding='utf-8')
+        f.write('\n' + 'Supermercado,Vinos blancos - Carefour,Precio')
 
         contador = 0
         for i in range(len(listadenombres3)):
             try:
                 WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located(self.pagina_principal.precios))
-                f.write('\n' + listadenombres3[contador] + ',' + precios3[contador])
+                f.write('\n' + 'Carrefour' + ',' +listadenombres3[contador] + ',' + precios3[contador])
                 contador = contador + 1
             except:
                 WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located(self.pagina_principal.precios))
-                f.write('\n' + listadenombres3[contador])
+                f.write('\n' + 'Carrefour' + ',' +listadenombres3[contador])
                 contador = contador + 1
 
-    def test_vinos_rosados_carrefour(self):
+    def test_c_vinos_rosados_carrefour(self):
         self.driver.get('https://www.carrefour.com.ar/Bebidas/Vinos/Vinos-rosados')
         self.driver.maximize_window()
         self.driver.implicitly_wait(5)
@@ -140,21 +118,8 @@ class Vinos(unittest.TestCase):
         time.sleep(10)
         self.pagina_principal.cerrar_alerta_cookies()
         time.sleep(10)
-        try:
-            self.pagina_principal.click_mostrar_mas()
-        except:
-            print("No se clickeó el primer mostrar más")
+        self.pagina_principal.mostrar_todas_las_paginas()
         time.sleep(5)
-
-        while True:
-            try:
-                WebDriverWait(self.driver, 5).until(
-                    EC.visibility_of_element_located(self.pagina_principal.mostrar_mas_boton))
-                self.pagina_principal.click_mostrar_mas()
-                time.sleep(5)
-            except:
-                time.sleep(5)
-                break
 
         """LOCATORS VINOS ROSADOS CARREFOUR"""
         listadeprecios = self.pagina_principal.lista_de_precios()
@@ -163,32 +128,32 @@ class Vinos(unittest.TestCase):
         listadenombres4 = []
         for i in listadenombres:
             listadenombres4.append(i.text)
-        print(listadenombres4)
+        # print(listadenombres4)
 
         precios4 = []
         for i in listadeprecios:
             precios4.append(i.text)
-        print(precios4)
+        # print(precios4)
 
         largo_nombres = len(listadenombres4)
         largo_precios = len(precios4)
-        print(f'los nombres de los vinos rosados totales son {largo_nombres}')
+        print('\n' + f'los nombres de los vinos rosados totales son {largo_nombres}')
         print(f'los precios de los vinos rosados totales son {largo_precios}')
 
         """MANEJO DE EXCEL"""
-        filename = 'preciosdevinos.csv'
-        f = open(filename, 'a', encoding='utf-8')
-        f.write('\n' + 'Vinos rosados - Carefour,Precio')
+        #filename = 'preciosdevinos.csv'
+        f = open(self.filename, 'a', encoding='utf-8')
+        f.write('\n' + 'Supermercado,Vinos rosados - Carefour,Precio')
 
         contador = 0
         for i in range(len(listadenombres4)):
             try:
                 WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located(self.pagina_principal.precios))
-                f.write('\n' + listadenombres4[contador] + ',' + precios4[contador])
+                f.write('\n' + 'Carrefour' + ',' +listadenombres4[contador] + ',' + precios4[contador])
                 contador = contador + 1
             except:
                 WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located(self.pagina_principal.precios))
-                f.write('\n' + listadenombres4[contador])
+                f.write('\n' + 'Carrefour' + ',' +listadenombres4[contador])
                 contador = contador + 1
 
     def tearDown(self):

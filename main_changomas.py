@@ -1,12 +1,11 @@
 from selenium import webdriver
 import unittest
 from selenium.webdriver.chrome.options import Options
-from mainPage_coto import MainPageCoto
+from mainPage_changomas import MainPageChangomas
 import time
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from datetime import datetime
-
 
 
 class Vinos(unittest.TestCase):
@@ -18,14 +17,14 @@ class Vinos(unittest.TestCase):
         self.filename = f'{current_date}.csv'
 
 
-    def test_a_vinostintos_coto(self):
-        self.driver.get('https://www.cotodigital3.com.ar/sitios/cdigi/browse/catalogo-bebidas-bebidas-con-alcohol-vinos-vinos-tintos/_/N-1sad76x?Nf')
+    def test_a_vinostintos_changomas(self):
+        self.driver.get('https://www.masonline.com.ar/vinos-y-espumantes/vino-tinto')
         self.driver.maximize_window()
-        self.driver.implicitly_wait(5)
-        self.pagina_principal = MainPageCoto(self.driver)
+        self.driver.implicitly_wait(10)
+        self.pagina_principal = MainPageChangomas(self.driver)
         time.sleep(10)
-
-        """LOCATORS VINOS TINTOS COTO"""
+        self.pagina_principal.mostrar_todas_las_paginas()
+        """LOCATORS VINOS TINTOS CHANGO MAS"""
         listadeprecios = self.pagina_principal.lista_de_precios()
         listadenombres = self.pagina_principal.lista_de_nombres()
 
@@ -36,21 +35,6 @@ class Vinos(unittest.TestCase):
         precios2 = []
         for i in listadeprecios:
             precios2.append(i.text)
-
-        while True:
-            try:
-                self.pagina_principal.click_mostrar_mas()
-                time.sleep(5)
-                listadeprecios = self.pagina_principal.lista_de_precios()
-                listadenombres = self.pagina_principal.lista_de_nombres()
-                for i in listadenombres:
-                    listadenombres2.append(i.text)
-                for i in listadeprecios:
-                    precios2.append(i.text)
-
-            except:
-                time.sleep(5)
-                break
 
         listanombrespunto = []
         for i in listadenombres2:
@@ -82,29 +66,31 @@ class Vinos(unittest.TestCase):
         print(f'los precios de los vinos tintos totales son {largo_precios}')
 
         """MANEJO DE EXCEL"""
-        #filename='preciosdevinos2.csv'
+        # current_date = self.now.strftime("%d_%m_%Y-%H")#_%M_%S")
+        # filename = f'{current_date}.csv'
         f = open(self.filename, 'a', encoding='utf-8')
-        f.write('Supermercado,Vinos tintos - Coto,Precio')
+        f.write('Supermercado,Vinos tintos - Chango mas,Precio')
 
         contador = 0
         for i in range(len(listadenombres2)):
             try:
                 WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located(self.pagina_principal.precios))
-                f.write('\n' + 'Coto' + ',' +listanombrespunto[contador] + ',' + listapreciospuntos[contador])
+                f.write('\n' + 'Changomas' + ',' + listanombrespunto[contador] + ',' + listapreciospuntos[contador])
                 contador = contador + 1
             except:
                 WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located(self.pagina_principal.precios))
-                f.write('\n' + 'Coto' + ',' +listanombrespunto[contador])
+                f.write('\n' + 'Changomas' + ',' + listanombrespunto[contador])
                 contador = contador + 1
 
-    def test_b_vinosblancos_coto(self):
-        self.driver.get('https://www.cotodigital3.com.ar/sitios/cdigi/browse/catalogo-bebidas-bebidas-con-alcohol-vinos-vinos-blancos/_/N-1l5slhl?Nf')
+    def test_b_vinosblancos_changomas(self):
+        self.driver.get('https://www.masonline.com.ar/vinos-y-espumantes/vino-blanco')
         self.driver.maximize_window()
-        self.driver.implicitly_wait(5)
-        self.pagina_principal = MainPageCoto(self.driver)
+        self.driver.implicitly_wait(10)
+        self.pagina_principal = MainPageChangomas(self.driver)
         time.sleep(10)
+        self.pagina_principal.mostrar_todas_las_paginas()
 
-        """LOCATORS VINOS BLANCOS COTO"""
+        """LOCATORS VINOS BLANCOS CHANGO MAS"""
         listadeprecios = self.pagina_principal.lista_de_precios()
         listadenombres = self.pagina_principal.lista_de_nombres()
 
@@ -115,21 +101,6 @@ class Vinos(unittest.TestCase):
         precios2 = []
         for i in listadeprecios:
             precios2.append(i.text)
-
-        while True:
-            try:
-                self.pagina_principal.click_mostrar_mas()
-                time.sleep(5)
-                listadeprecios = self.pagina_principal.lista_de_precios()
-                listadenombres = self.pagina_principal.lista_de_nombres()
-                for i in listadenombres:
-                    listadenombres2.append(i.text)
-                for i in listadeprecios:
-                    precios2.append(i.text)
-
-            except:
-                time.sleep(5)
-                break
 
         listanombrespunto = []
         for i in listadenombres2:
@@ -161,29 +132,31 @@ class Vinos(unittest.TestCase):
         print(f'los precios de los vinos blancos totales son {largo_precios}')
 
         """MANEJO DE EXCEL"""
-        #filename='preciosdevinos2.csv'
+        # current_date = self.now.strftime("%d_%m_%Y-%H")#_%M_%S")
+        # filename = f'{current_date}.csv'
         f = open(self.filename, 'a', encoding='utf-8')
-        f.write('\n' +'Supermercado,Vinos blancos - Coto,Precio')
+        f.write('\n' + 'Supermercado,Vinos blancos - Chango mas,Precio')
 
         contador = 0
         for i in range(len(listadenombres2)):
             try:
                 WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located(self.pagina_principal.precios))
-                f.write('\n' + 'Coto' + ',' +listanombrespunto[contador] + ',' + listapreciospuntos[contador])
+                f.write('\n' + 'Changomas' + ',' + listanombrespunto[contador] + ',' + listapreciospuntos[contador])
                 contador = contador + 1
             except:
                 WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located(self.pagina_principal.precios))
-                f.write('\n' + 'Coto' + ',' +listanombrespunto[contador])
+                f.write('\n' + 'Changomas' + ',' + listanombrespunto[contador])
                 contador = contador + 1
 
-    def test_c_vinosrosados_coto(self):
-        self.driver.get('https://www.cotodigital3.com.ar/sitios/cdigi/browse/catalogo-bebidas-bebidas-con-alcohol-vinos-vinos-rosados/_/N-vrxj9f?Nf')
+    def test_c_vinosrosados_changomas(self):
+        self.driver.get('https://www.masonline.com.ar/vinos-y-espumantes/vino-rosado')
         self.driver.maximize_window()
-        self.driver.implicitly_wait(5)
-        self.pagina_principal = MainPageCoto(self.driver)
+        self.driver.implicitly_wait(10)
+        self.pagina_principal = MainPageChangomas(self.driver)
         time.sleep(10)
+        self.pagina_principal.mostrar_todas_las_paginas()
 
-        """LOCATORS VINOS ROSADOS COTO"""
+        """LOCATORS VINOS ROSADOS CHANGO MAS"""
         listadeprecios = self.pagina_principal.lista_de_precios()
         listadenombres = self.pagina_principal.lista_de_nombres()
 
@@ -194,21 +167,6 @@ class Vinos(unittest.TestCase):
         precios2 = []
         for i in listadeprecios:
             precios2.append(i.text)
-
-        while True:
-            try:
-                self.pagina_principal.click_mostrar_mas()
-                time.sleep(5)
-                listadeprecios = self.pagina_principal.lista_de_precios()
-                listadenombres = self.pagina_principal.lista_de_nombres()
-                for i in listadenombres:
-                    listadenombres2.append(i.text)
-                for i in listadeprecios:
-                    precios2.append(i.text)
-
-            except:
-                time.sleep(5)
-                break
 
         listanombrespunto = []
         for i in listadenombres2:
@@ -240,19 +198,20 @@ class Vinos(unittest.TestCase):
         print(f'los precios de los vinos rosados totales son {largo_precios}')
 
         """MANEJO DE EXCEL"""
-        #filename='preciosdevinos2.csv'
+        # current_date = self.now.strftime("%d_%m_%Y-%H")#_%M_%S")
+        # filename = f'{current_date}.csv'
         f = open(self.filename, 'a', encoding='utf-8')
-        f.write('\n' +'Supermercado,Vinos rosados - Coto,Precio')
+        f.write('\n' + 'Supermercado,Vinos blancos - Chango mas,Precio')
 
         contador = 0
         for i in range(len(listadenombres2)):
             try:
                 WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located(self.pagina_principal.precios))
-                f.write('\n' + 'Coto' + ',' +listanombrespunto[contador] + ',' + listapreciospuntos[contador])
+                f.write('\n' + 'Changomas' + ',' + listanombrespunto[contador] + ',' + listapreciospuntos[contador])
                 contador = contador + 1
             except:
                 WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located(self.pagina_principal.precios))
-                f.write('\n' + 'Coto' + ',' +listanombrespunto[contador])
+                f.write('\n' + 'Changomas' + ',' + listanombrespunto[contador])
                 contador = contador + 1
 
 

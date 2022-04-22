@@ -24,6 +24,18 @@ class MainPage:
     def click_mostrar_mas(self):
         self.driver.find_element(*self.mostrar_mas_boton).click()
 
+    def mostrar_todas_las_paginas(self):
+        while True:
+            try:
+                WebDriverWait(self.driver, 15).until(
+                    EC.visibility_of_element_located(self.mostrar_mas_boton))
+                self.click_mostrar_mas()
+                #time.sleep(5)
+            except:
+                #time.sleep(5)
+                break
+
+
 
 
 

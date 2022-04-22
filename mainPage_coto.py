@@ -20,7 +20,7 @@ class MainPageCoto:
 
     def click_mostrar_mas(self):
         try:
-            WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable(self.siguiente_pagina))
+            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.siguiente_pagina))
             self.driver.find_element(*self.siguiente_pagina).click()
         except:
             WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable(self.siguiente_pagina_2))
